@@ -1,0 +1,13 @@
+.custom-purple {
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+}
+.custom-purple
+.custom-purple:hover {
+  background-color: #574ee3;
+}
+
+.text-purple {
+  color: #6c63ff;
+}

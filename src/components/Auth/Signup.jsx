@@ -25,7 +25,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="container">
+    <div className="auth-container">
       <div className="form-box">
         <h1>Create Account</h1>
         <form onSubmit={handleSubmit}>
