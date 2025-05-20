@@ -3,6 +3,17 @@ import { API_PATHS_ADMIN, API_PATHS_USER } from '../../api/config';
 import axiosAdmin from '../../api/axiosAdmin';
 import axiosUser from '../../api/axiosUser';
 
+const CLASSIFIER_OPTIONS = [
+  { value: null, label: 'All' },
+  { value: 'RedLineStealer', label: 'RedLineStealer' },
+  { value: 'Downloader', label: 'Downloader' },
+  { value: 'RAT', label: 'RAT' },
+  { value: 'BankingTrojan', label: 'BankingTrojan' },
+  { value: 'SnakeKeyLogger', label: 'SnakeKeyLogger' },
+  { value: 'Spyware', label: 'Spyware' },
+  { value: 'Benign', label: 'Benign' }
+];
+
 const HistoryTable = ({ isAdmin = false }) => {
   const formatDate = (date) => {
     const year = date.getFullYear();
@@ -25,12 +36,12 @@ const HistoryTable = ({ isAdmin = false }) => {
     ...getDefaultDateRange(),
     page: 1,
     size: 10,
-    classifier: 'all'
+    classifier: null
   });
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [classifiers, setClassifiers] = useState(['all']);
+  const [classifiers, setClassifiers] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -51,8 +62,8 @@ const HistoryTable = ({ isAdmin = false }) => {
         size: filters.size
       };
 
-      // Only add classifier if it's not 'all'
-      if (filters.classifier !== 'all') {
+      // Only add classifier if it's not null and not empty string
+      if (filters.classifier && filters.classifier !== '') {
         params.classifier = filters.classifier;
       }
 
@@ -62,7 +73,7 @@ const HistoryTable = ({ isAdmin = false }) => {
         setData(response.data);
         // Update classifiers list if needed
         const uniqueClassifiers = [...new Set(response.data.items.map(item => item.classifier))];
-        setClassifiers(['all', ...uniqueClassifiers]);
+        setClassifiers([...uniqueClassifiers]);
       } else {
         setError(response.data.message || 'Failed to fetch history data');
       }
@@ -203,12 +214,12 @@ const HistoryTable = ({ isAdmin = false }) => {
             <select
               className="form-select"
               name="classifier"
-              value={filters.classifier}
+              value={filters.classifier || ''}
               onChange={handleFilterChange}
             >
-              {classifiers.map((classifier, index) => (
-                <option key={index} value={classifier}>
-                  {classifier}
+              {CLASSIFIER_OPTIONS.map((option) => (
+                <option key={option.value || 'all'} value={option.value || ''}>
+                  {option.label}
                 </option>
               ))}
             </select>

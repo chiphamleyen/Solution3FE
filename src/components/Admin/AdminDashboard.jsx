@@ -145,10 +145,12 @@ const AdminDashboard = () => {
   };
 
   // Transform classifier data for pie chart
-  const malwareData = dashboardData.classifier.map(item => ({
-    name: item.type,
-    value: item.total
-  }));
+  const malwareData = dashboardData.classifier
+    .filter(item => item.type !== 'Benign')
+    .map(item => ({
+      name: item.type,
+      value: item.total
+    }));
 
   if (loading) {
     return <div className="admin-dashboard container">Loading...</div>;
@@ -234,7 +236,8 @@ const AdminDashboard = () => {
                 labelLine={false}
                 label={false}
               >
-                {malwareData.map((entry, index) => (
+                {malwareData
+                .map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
