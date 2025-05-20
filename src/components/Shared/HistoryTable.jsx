@@ -41,7 +41,6 @@ const HistoryTable = ({ isAdmin = false }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [classifiers, setClassifiers] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -71,9 +70,6 @@ const HistoryTable = ({ isAdmin = false }) => {
 
       if (response.data.error_code === 0) {
         setData(response.data);
-        // Update classifiers list if needed
-        const uniqueClassifiers = [...new Set(response.data.items.map(item => item.classifier))];
-        setClassifiers([...uniqueClassifiers]);
       } else {
         setError(response.data.message || 'Failed to fetch history data');
       }
