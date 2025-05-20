@@ -4,6 +4,7 @@ import FileUpload from '../Shared/FileUpload';
 import AnalysisResultCard from '../Shared/AnalysisResultCard';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 // import './UserDashboard.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { API_PATHS } from '../../api/config';
@@ -101,6 +102,41 @@ function MalwareAnalysisDashboard() {
     doc.save('malware_analysis_results.pdf');
   };
 
+  // Export CSV handler
+  const handleExportCSV = () => {
+    if (!results || !results.items || results.items.length === 0) return;
+    const header = ['SHA-256 Hash', 'Status', 'Classification'];
+    const rows = results.items.map(item => [
+      item.sha_256_hash,
+      item.detection ? 'Malicious' : 'Benign',
+      item.classifier
+    ]);
+    const csvContent = [header, ...rows].map(e => e.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'malware_analysis_results.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Export Excel handler
+  const handleExportExcel = () => {
+    if (!results || !results.items || results.items.length === 0) return;
+    const ws = XLSX.utils.json_to_sheet(
+      results.items.map(item => ({
+        'SHA-256 Hash': item.sha_256_hash,
+        'Status': item.detection ? 'Malicious' : 'Benign',
+        'Classification': item.classifier
+      }))
+    );
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Results');
+    XLSX.writeFile(wb, 'malware_analysis_results.xlsx');
+  };
+
   return (
     <div className="container-fluid" style={{ maxWidth: '90%', padding: '20px' }}>
       <Header isAdmin={false} />
@@ -139,9 +175,17 @@ function MalwareAnalysisDashboard() {
           <section className="card shadow-sm p-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h2 className="h4 fw-bold mb-0">Analysis Results</h2>
-              <button className="btn btn-outline-danger" onClick={handleExportPDF}>
-                Export PDF
-              </button>
+              <div>
+                <button className="btn btn-outline-danger me-2" onClick={handleExportPDF}>
+                  Export PDF
+                </button>
+                <button className="btn btn-outline-success me-2" onClick={handleExportCSV}>
+                  Export CSV
+                </button>
+                <button className="btn btn-outline-primary" onClick={handleExportExcel}>
+                  Export Excel
+                </button>
+              </div>
             </div>
             <AnalysisResultCard results={results} hideExportPdfButton />
           </section>

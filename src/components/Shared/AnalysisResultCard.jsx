@@ -86,6 +86,13 @@ const AnalysisResultCard = ({ results, hideExportPdfButton }) => {
     doc.save('malware_analysis_results.pdf');
   };
 
+  // Tính màu cho threat score
+  const getThreatColor = (percent) => {
+    if (percent <= 30) return 'bg-success'; // Green
+    if (percent <= 60) return 'bg-warning'; // Yellow
+    return 'bg-danger'; // Red
+  };
+
   if (!results || !results.items || results.items.length === 0) {
     return (
       <div className="card">
@@ -141,7 +148,7 @@ const AnalysisResultCard = ({ results, hideExportPdfButton }) => {
           <h5 className="mb-3">Threat Score</h5>
           <div className="progress" style={{ height: '25px' }}>
             <div 
-              className="progress-bar bg-danger" 
+              className={`progress-bar ${getThreatColor(malwarePercentage)}`} 
               role="progressbar" 
               style={{ width: `${malwarePercentage}%` }}
               aria-valuenow={malwarePercentage} 
