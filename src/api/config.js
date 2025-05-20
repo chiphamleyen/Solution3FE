@@ -26,6 +26,7 @@ const API_PATHS = {
   PROFILE: `${BASE_URL}/account/profile`,
   UPDATE_PROFILE: `${BASE_URL}/account/update_profile`,
   LOGIN: `${BASE_URL}/api/auth/login`,
+  MALWARE_PROFILE: `${BASE_URL}/malware_profile/list`,
 };
 
 export { BASE_URL, API_PATHS, API_PATHS_ADMIN, API_PATHS_USER };

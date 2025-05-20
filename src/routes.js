@@ -9,6 +9,7 @@ import UserHistory from './components/User/UserHistory';
 import AdminHistory from './components/Admin/AdminHistory';
 import UserSettings from './components/User/UserSettings';
 import AdminSettings from './components/Admin/AdminSettings';
+import MalwarePrevention from './components/User/MalwarePrevention';
 
 const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
       <Route path="/user/analysis" element={<UserDashboard />} />
       <Route path="/user/history" element={<UserHistory />} />
       <Route path="/user/settings" element={<UserSettings />} />
+      <Route path="/user/prevention" element={<MalwarePrevention />} />
     </Routes>
   );
 };

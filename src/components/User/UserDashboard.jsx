@@ -9,6 +9,7 @@ import * as XLSX from 'xlsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { API_PATHS } from '../../api/config';
 import axiosUser from '../../api/axiosUser';
+import { useNavigate } from 'react-router-dom';
 
 function MalwareAnalysisDashboard() {
   const [files, setFiles] = useState({
@@ -20,6 +21,7 @@ function MalwareAnalysisDashboard() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleFileUpload = (fileType, file) => {
     setFiles(prev => ({
@@ -137,6 +139,12 @@ function MalwareAnalysisDashboard() {
     XLSX.writeFile(wb, 'malware_analysis_results.xlsx');
   };
 
+  const handleShowPrevention = () => {
+    if (!results || !results.items || results.items.length === 0) return;
+    const classifiers = Array.from(new Set(results.items.map(item => item.classifier)));
+    navigate('/user/prevention', { state: { classifiers } });
+  };
+
   return (
     <div className="container-fluid" style={{ maxWidth: '90%', padding: '20px' }}>
       <Header isAdmin={false} />
@@ -176,6 +184,9 @@ function MalwareAnalysisDashboard() {
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h2 className="h4 fw-bold mb-0">Analysis Results</h2>
               <div>
+              <button className="btn btn-warning me-2" onClick={handleShowPrevention} disabled={!results || !results.items || results.items.length === 0}>
+                  How to prevent?
+                </button>
                 <button className="btn btn-outline-danger me-2" onClick={handleExportPDF}>
                   Export PDF
                 </button>
