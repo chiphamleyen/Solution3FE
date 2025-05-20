@@ -69,7 +69,9 @@ const AdminLogin = () => {
               />
             </div>
             <div className="forgot-link">
-              <a href="#">Forgot password?</a>
+              <button type="button" className="btn btn-link p-0" style={{ textDecoration: 'underline' }}>
+                Forgot password?
+              </button>
             </div>
           </div>
           <div className="btn-field">

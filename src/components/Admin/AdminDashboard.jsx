@@ -43,8 +43,12 @@ const AdminDashboard = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchDashboardData();
-    fetchDailyData();
+    const fetchAll = async () => {
+      await fetchDashboardData();
+      await fetchDailyData();
+    };
+    fetchAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const handleDateRangeChange = (range) => {
