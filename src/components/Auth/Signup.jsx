@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosUser from '../../api/axiosUser';
+import { API_PATHS_USER } from '../../api/config';
 import './Login.css'; // Reusing login styles
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    user_name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -18,25 +21,48 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add validation and registration logic
-    navigate('/dashboard');
+    setError('');
+
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      const response = await axiosUser.post(API_PATHS_USER.REGISTER, {
+        user_name: formData.user_name,
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (response.data.error_code === 0) {
+        // Registration successful, navigate to login
+        navigate('/user/login');
+      } else {
+        setError(response.data.message || 'Registration failed');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    }
   };
 
   return (
     <div className="auth-container">
       <div className="form-box">
         <h1>Create Account</h1>
+        {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <div className="input-field">
-              <label htmlFor="name">Full Name</label>
+              <label htmlFor="user_name">Username</label>
               <input
                 type="text"
-                id="name"
-                placeholder="Enter your full name"
-                value={formData.name}
+                id="user_name"
+                placeholder="Enter your username"
+                value={formData.user_name}
                 onChange={handleChange}
                 required
               />
@@ -64,7 +90,7 @@ const Signup = () => {
               />
             </div>
             <div className="input-field">
-              <label htmlFor="confirm-password">Confirm Password</label>
+              <label htmlFor="confirmPassword">Confirm Password</label>
               <input
                 type="password"
                 id="confirmPassword"
@@ -79,7 +105,7 @@ const Signup = () => {
             <button type="submit">Sign Up</button>
           </div>
           <div className="login-link">
-            Already have an account? <a href="/login">Login</a>
+            Already have an account? <a href="/user/login">Login</a>
           </div>
         </form>
       </div>
