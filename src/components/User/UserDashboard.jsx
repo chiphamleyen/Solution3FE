@@ -141,8 +141,7 @@ function MalwareAnalysisDashboard() {
 
   const handleShowPrevention = () => {
     if (!results || !results.items || results.items.length === 0) return;
-    const classifiers = Array.from(new Set(results.items.map(item => item.classifier)));
-    navigate('/user/prevention', { state: { classifiers } });
+    navigate('/user/prevention', { state: { hasAnalysis: true } });
   };
 
   return (
